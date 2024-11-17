@@ -1,0 +1,120 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./stylesheets/appointment.css">
+</head>
+<body>
+    <div class="main">
+        <h2>Apply for Doctor</h2>
+        <div class="form">
+            <div class="special">
+                <select name="speciality" id="speciality" class="form-control" onfocus='this.size=5;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+                    <option value="">-- Please choose Your Specialization --</option>
+                    <option value="Cardiology">Cardiology</option>
+                    <option value="Endocrinology">Endocrinology</option>
+                    <option value="Gastroenterology">Gastroenterology</option>
+                    <option value="Urologist">Urologist</option>
+                    <option value="Dermatology">Dermatology</option>
+                    <option value="Radiology">Radiology</option>
+                    <option value="Psychiatrist">Psychiatrist</option>
+                    <option value="Anesthesiology">Anesthesiology</option>
+                    <option value="Hematology">Hematology</option>
+                    <option value="Ophthalmology">Ophthalmology</option>
+                    <option value="Pulmonology">Pulmonology</option>
+                    <option value="Obstetrician/Gynecologist (OB/GYN)">Obstetrician/Gynecologist (OB/GYN)</option>
+                    <option value="Neurologist">Neurologist</option>
+                </select>
+            </div>
+            <div>
+                <input type="number" name="" required id="experiance" placeholder="Enter your Experiance in Years">
+            </div>
+            <div>
+                <input type="number" name="" required id="charges" placeholder="Enter Your Fees(in Rupees ₹)">
+            </div>
+            <div>
+                <input type="submit" id="apply" value="Apply">
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for Doctor</title>
+    <link rel="stylesheet" href="/stylesheets/appointment.css"> <!-- Ensure the path is correct -->
+</head>
+<body>
+    <div class="main">
+        <h2>Apply for Doctor</h2>
+        <form class="form" action="/apply-doctor" method="POST">
+            <div class="special">
+                <label for="speciality">Specialization:</label>
+                <select name="speciality" id="speciality" class="form-control" >
+                    <option value="" disabled selected>-- Please choose Your Specialization --</option>
+                    <option value="Cardiology">Cardiology</option>
+                    <option value="Endocrinology">Endocrinology</option>
+                    <option value="Gastroenterology">Gastroenterology</option>
+                    <option value="Urologist">Urologist</option>
+                    <option value="Dermatology">Dermatology</option>
+                    <option value="Radiology">Radiology</option>
+                    <option value="Psychiatrist">Psychiatrist</option>
+                    <option value="Anesthesiology">Anesthesiology</option>
+                    <option value="Hematology">Hematology</option>
+                    <option value="Ophthalmology">Ophthalmology</option>
+                    <option value="Pulmonology">Pulmonology</option>
+                    <option value="Obstetrician/Gynecologist (OB/GYN)">Obstetrician/Gynecologist (OB/GYN)</option>
+                    <option value="Neurologist">Neurologist</option>
+                </select>
+            </div>
+            <div>
+                <label for="experience">Experience (Years):</label>
+                <input type="number" required id="experience" class="form-control" placeholder="Enter your Experience in Years">
+            </div>
+            <div>
+                <label for="charges">Fees (in Rupees ₹):</label>
+                <input type="number" required id="charges" class="form-control" placeholder="Enter Your Fees">
+            </div>
+            <div>
+                <input type="submit" id="apply" value="Apply">
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles.css" />
+    <title>Doctors List</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Our Doctors</h1>
+      <div class="doctor-list">
+        <% doctors.forEach(doctor => { %>
+        <div class="doctor-card">
+          <img
+            src="<%= doctor.imageUrl %>"
+            alt="<%= doctor.name %>"
+            class="doctor-image"
+          />
+          <h2 class="doctor-name"><%= doctor.name %></h2>
+          <p class="doctor-specialty"><%= doctor.specialty %></p>
+          <p class="doctor-rating">Rating: <%= doctor.fees %></p>
+          <a
+            href="/book-appointment?doctorId=<%= doctor._id %>"
+            class="book-button"
+            >Book Appointment</a
+          >
+        </div>
+        <% }); %>
+      </div>
+    </div>
+  </body>
+</html>

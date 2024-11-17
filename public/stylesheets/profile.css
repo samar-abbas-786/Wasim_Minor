@@ -1,0 +1,145 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Added box-sizing for better control */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4; /* Light background for contrast */
+    color: #333; /* Dark text for readability */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Navbar Styles */
+#navbar {
+    width: 100vw;
+    height: 15vh;
+    background-color: #2c3e50; /* Dark background for navbar */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#logo img {
+    height: 12vh;
+    width: 12vh;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+#logo img:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#nav-item {
+    display: flex;
+}
+
+#nav-item li {
+    list-style: none;
+    margin-right: 3vw;
+}
+
+#nav-item a {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 15px;
+    color: #ecf0f1; /* Light text color for navbar links */
+}
+
+#nav-item a:hover {
+    color: #3498db; /* Highlight color on hover */
+}
+
+#help1 {
+    display: flex;
+    align-items: center;
+}
+
+#mode {
+    width: 5vh;
+    cursor: pointer;
+    color: #ecf0f1; /* Light icon color */
+}
+
+#help {
+    margin: 0vh 2vw;
+    text-decoration: none;
+    color: #ecf0f1; /* Light text color for help link */
+}
+
+/* Profile Styles */
+.profile-container {
+    width: 100%;
+    max-width: 600px; /* Set a max width for the profile form */
+    margin: 20px auto; /* Center the profile container */
+    background-color: white; /* White background for the form */
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px; /* Padding inside the form */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.profile-container h2 {
+    text-align: center; /* Center the heading */
+    margin-bottom: 20px; /* Space below the heading */
+}
+
+.profile-container form {
+    display: flex;
+    flex-direction: column; /* Stack inputs vertically */
+}
+
+.profile-container input {
+    margin-bottom: 15px; /* Space between inputs */
+    padding: 10px; /* Padding for input fields */
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 5px; /* Rounded corners for inputs */
+    font-size: 16px; /* Font size for inputs */
+    width: 100%; /* Ensure inputs take full width */
+}
+
+.profile-container input:focus {
+    border-color: #3498db; /* Change border color on focus */
+    outline: none; /* Remove default outline */
+}
+
+.profile-container .profile-photo {
+    width: 100px; /* Fixed size for profile photo */
+    height: 100px;
+    border-radius: 50%; /* Circular photo */
+    margin: 0 auto 20px; /* Center the photo with space below */
+}
+
+.profile-container button {
+    padding: 10px;
+    border: none;
+    background-color: #3498db; /* Button color */
+    color: white; /* Button text color */
+    font-size: 16px; /* Font size for button */
+    border-radius: 5px; /* Rounded corners for button */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.profile-container button:hover {
+    background-color: #2980b9; /* Darker blue on hover */
+}
+
+.logout-button {
+    display: inline-block; /* Make the logout button inline */
+    padding: 10px 20px; /* Padding for logout button */
+    color: white; /* Text color */
+    background-color: red; /* Background color for logout button */
+    border-radius: 5px; /* Rounded corners */
+    text-decoration: none; /* Remove underline */
+    text-align: center; /* Center the text */
+    margin-top: 20px; /* Space above the button */
+    width: 100%; /* Full width */
+}
+
+.logout-button:hover {
+    background-color: darkred; /* Darker red on hover */
+}

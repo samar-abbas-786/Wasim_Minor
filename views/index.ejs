@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DoctorAppointment</title>
+
+    <!-- Font Awesome CDN for social media icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- RemixIcon CDN for other icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="shortcut icon"
+      href="/image/Appointment-Callander.png"
+      type="image/x-icon"
+    />
+    <link rel="shortcut icon" href="./LOGO.jpg" type="image/x-icon" />
+    <link rel="stylesheet" href="./stylesheets/home.css" />
+  </head>
+
+  <body>
+    <!-- <div class="preloader">
+        <img id="logo-img" src="./images/LOGO.jpg" alt="Appointment">
+        <div class="text-container">
+            <h1 class="big-text">Welcome to Doctors's Appointment Portal</h1>
+
+        </div>
+    </div> -->
+
+    <div id="page1">
+      <!-- Adding Navbar -->
+      <div id="navbar">
+        <div id="logo">
+          <img src="./images/pngwing.com (1).png" alt="Logo" />
+        </div>
+        <div id="nav-item">
+          <li>
+            <a href="/" id="home">HOME</a>
+          </li>
+          <li>
+            <a
+              href=" <%= user?`/profile/${encodeURIComponent(user.email)}`  : '/login' %>"
+              id="services"
+              >PROFILE</a
+            >
+          </li>
+          <li>
+            <a href="#aboutUs" id="about">ABOUT</a>
+          </li>
+          <li>
+            <a href="#contactUs" id="contact">CONTACT</a>
+          </li>
+          <li>
+            <a href="/login" id="login">LOGIN</a>
+          </li>
+        </div>
+        <div id="help1">
+          <i id="mode" class="ri-sun-fill"></i>
+          <a href="tel:+91 9523366855" id="help"
+            >HelpLine
+            <i class="fa-solid fa-phone fa-fade"></i>
+          </a>
+        </div>
+      </div>
+      <!-- Adding the Front Page -->
+      <div class="main">
+        <div class="left">
+          <h1>
+            Healthcare at Your <br />
+            <span>Convenience</span>
+          </h1>
+          <p>
+            Take control of your healthcare by booking appointments that fit
+            your busy lifestyle.
+          </p>
+          <button><a href="/doctors">Make an Appointment</a></button>
+        </div>
+        <div class="right">
+          <img
+            src="./images/Meeting-going-on.png"
+            alt="Photo Of Meeting Going ON"
+            id="photo"
+          />
+        </div>
+      </div>
+      <!-- Page 2 => About Us -->
+      <div id="aboutUs">
+        <div id="left1">
+          <img src="./images/about.gif" alt="" />
+        </div>
+        <div id="right1">
+          <h2>About Us</h2>
+          <p>
+            At <span>QuickMedBook</span>, we are dedicated to revolutionizing
+            healthcare by making it more accessible, convenient, and
+            patient-centered. Our platform connects you with experienced and
+            trusted doctors across various specialties, allowing you to book
+            appointments online from the comfort of your home.
+            <br />
+            <br />
+            With just a few clicks, you can browse doctors, check availability,
+            and consult with professionals through video calls or in-person
+            appointments at your convenience. We prioritize your health and
+            safety by ensuring that all doctors on our platform are fully
+            certified and committed to delivering the highest quality care.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== Start why choose Section ========== -->
+    <div class="whyChooseUs">
+      <h1 class="why-choose-us">Why Choose Quick Med Doc</h1>
+      <div class="container">
+        <div class="left">
+          <div class="first">
+            <div class="heading">
+              <h2 class="number">1.</h2>
+              <h2 class="reason">Convenience:</h2>
+              <p>Schedule appointments anytime, anywhere.</p>
+            </div>
+          </div>
+          <div class="third">
+            <div class="heading">
+              <h2 class="number">3.</h2>
+              <h2 class="reason">Wide Range of Specialties:</h2>
+              <p>Find specialists for every medical need.</p>
+            </div>
+          </div>
+          <div class="five">
+            <div class="heading">
+              <h2 class="number">5.</h2>
+              <h2 class="reason">Wide Range of Specialties:</h2>
+              <p>Find specialists for every medical need.</p>
+            </div>
+          </div>
+        </div>
+        <div class="center">
+          <img
+            src="./images/Why-Choose-us2-removebg-preview.png"
+            alt="Image Of Why Choose Us"
+          />
+        </div>
+        <div class="right">
+          <div class="second">
+            <div class="heading">
+              <h2 class="number">2.</h2>
+              <h2 class="reason">Verified Doctors:</h2>
+              <p>
+                All professionals on our platform are vetted and accredited.
+              </p>
+            </div>
+          </div>
+          <div class="four">
+            <div class="heading">
+              <h2 class="number">4.</h2>
+              <h2 class="reason">Secure & Private:</h2>
+              <p>Your health information is confidential and protected.</p>
+            </div>
+          </div>
+          <div class="six">
+            <div class="heading">
+              <h2 class="number">6.</h2>
+              <h2 class="reason">Wide Range of Specialties:</h2>
+              <p>Find specialists for every medical need.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ========== End why choose Section ========== -->
+
+    <!-- ========== Start Contact Us Section ========== -->
+    <form method="post" action="/contact" id="contactUs">
+      <div class="heading">
+        <h1>Contact Us</h1>
+        <h3>Get in touch with us. We are always here to help you.</h3>
+      </div>
+      <div class="container">
+        <div class="left">
+          <div class="first">
+            <div class="name">
+              <h4>Username</h4>
+              <input
+                name="username"
+                type="text"
+                placeholder="Enter Your Name"
+                id="username"
+              />
+            </div>
+            <div class="email">
+              <h4>Enter Your Email</h4>
+              <input
+                name="email"
+                type="email"
+                id="useremail"
+                placeholder="abc@amu.ac.in"
+              />
+            </div>
+          </div>
+          <div class="second">
+            <h4>Subject</h4>
+            <input
+              name="subject"
+              type="text"
+              id="subject"
+              required
+              placeholder="Your Main Tittle"
+            />
+          </div>
+          <div class="third">
+            <h4>Message</h4>
+            <textarea
+              placeholder="Enter Your Message"
+              id="message"
+              name="message"
+              rows="10"
+              cols="30"
+            ></textarea>
+          </div>
+          <div class="submit">
+            <input type="submit" value="Send Message" />
+          </div>
+        </div>
+        <div class="right">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3525.650762997077!2d78.06993217493043!3d27.912688616405784!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3974a5003f9add7b%3A0xfc1cf3db17691bf4!2sSir%20Shah%20Sulaiman%20Hall!5e0!3m2!1sen!2sin!4v1728065426506!5m2!1sen!2sin"
+            width="600"
+            height="450"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+      </div>
+    </form>
+
+    <!-- ========== End Contact Us Section ========== -->
+
+    <!-- ========== Start Footer Section ============== -->
+    <div class="footer">
+      <div class="first">
+        <div class="logo">
+          <img src="./images/pngwing.com (1).png" alt="Logo of QuickMedDoc" />
+          <h1>Quick Med Doc</h1>
+        </div>
+        <h4>Let's revolutionize the way you consult with DoctorAppointment</h4>
+        <div class="social-sites">
+          <a
+            href="https://www.youtube.com/@wasim8304"
+            style="text-decoration: none"
+          >
+            <i class="fa-brands fa-youtube" style="color: #ff0000"></i>
+          </a>
+          <a
+            href="https://www.instagram.com/king_wasim_akhtar/"
+            style="text-decoration: none"
+          >
+            <i class="fa-brands fa-instagram" style="color: #ff531a"></i>
+          </a>
+          <a
+            href="https://www.linkedin.com/in/md-wasim-akhtar-24027a1b1/"
+            style="text-decoration: none"
+          >
+            <i class="fa-brands fa-linkedin" style="color: #3e79e0"></i>
+          </a>
+          <a
+            href="https://github.com/Md-Wasim-Akhtar"
+            style="text-decoration: none"
+          >
+            <i class="fa-brands fa-github" style="color: #ffffff"></i>
+          </a>
+          <a
+            href="https://www.facebook.com/mdwasim.akhtar.923519"
+            style="text-transform: none"
+          >
+            <i class="fa-brands fa-facebook" style="color: #1352be"></i>
+          </a>
+        </div>
+      </div>
+      <div class="second">
+        <h3>Quick Links</h3>
+        <h4>
+          <a href="/">Home</a>
+        </h4>
+        <h4>
+          <a href="#aboutUs">About Us</a>
+        </h4>
+        <h4>
+          <a href="#">Doctors</a>
+        </h4>
+        <h4>
+          <a href="#">Appointments</a>
+        </h4>
+        <h4>
+          <a href="/profile">Profile</a>
+        </h4>
+      </div>
+      <div class="third">
+        <h3>Support</h3>
+        <h4>
+          <a href="#">Donate</a>
+        </h4>
+        <h4>
+          <a href="#contactUs">Contact Us</a>
+        </h4>
+      </div>
+    </div>
+
+    <!-- ========== End Footer Section ============== -->
+
+    <!-- GSAP Script -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+      integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <!-- <script src="./javascripts/home.js"></script> -->
+  </body>
+</html>

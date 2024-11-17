@@ -1,0 +1,2 @@
+to add .gitkeep in every folder :-
+                         ctrl + shift + p , then write (add git keept)
