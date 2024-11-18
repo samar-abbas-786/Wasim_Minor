@@ -8,16 +8,16 @@ const session = require("express-session");
 const passport = require("passport");
 const Appointment = require("./models/appointment-Model");
 const Doctor = require("./models/doctor-Model");
-// const mongoose = require('./db');
+const connectDB = require("./db");
 const User = require("./models/user-Model");
 
 const app = express();
-const JWT_SECRET = "your_jwt_secret_key"; // Use a secure, environment-specific secret
+const JWT_SECRET = "your_jwt_secret_key";
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
-app.use(cookieParser()); // Use cookie-parser before your routes
+app.use(cookieParser());
 // Middleware setup
 app.use(
   session({
@@ -135,16 +135,25 @@ app.post("/login", async (req, res) => {
     if (!isMatch) {
       return res.render("login", { message: "Invalid email or password." });
     }
+    /*
+    //Store local storage in forntend
 
+
+
+
+
+    \
+
+    */
     // Create JWT token
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
       expiresIn: "1h",
     });
     res.cookie("token", token, { httpOnly: true });
-
+    console.log(user);
     // Pass user details to the profile page
     // res.render('profile', { user: user, message: null }); // Redirect to profile page with user details
-    res.redirect(`/profile/${encodeURIComponent(user.email)}`); // Redirect to user's profile using email
+    res.redirect(`/profile/${encodeURIComponent(user.username)}`); // Redirect to user's profile using email
   } catch (error) {
     console.error(error);
     res.render("login", { message: "Error logging in. Please try again." });
@@ -170,10 +179,10 @@ app.get("/", (req, res) => {
 });
 
 // // GET route for user profile by email
-app.get("/profile/:email", isAuthenticated, async (req, res) => {
+app.get("/profile/:username", isAuthenticated, async (req, res) => {
   try {
-    const email = decodeURIComponent(req.params.email); // Decode the email from the URL
-    const user = await User.findOne({ email }); // Find user by
+    const username = decodeURIComponent(req.params.username); // Decode the email from the URL
+    const user = await User.findOne({ username }); // Find user by
     console.log(req.session.user);
 
     if (!user) {
@@ -188,25 +197,26 @@ app.get("/profile/:email", isAuthenticated, async (req, res) => {
 });
 
 // POST route to update user profile
-app.post("/profile", async (req, res) => {
+app.post("/profile/:username", async (req, res) => {
   try {
-    const { username, email, age, mobile, gender, address, photoLink } =
-      req.body;
-    const userId = req.user.userId; // Assuming you are storing user ID in the request object (from JWT)
+    const { username } = req.params;
+    const { email, age, mobile, gender, address, photoLink } = req.body;
+    // const userId = req.user?.userId; // Assuming userId comes from a middleware handling JWT
 
-    // Update user in the database
-    await User.findByIdAndUpdate(userId, {
-      username,
-      email, // Include email in the update
-      age,
-      mobile,
-      gender,
-      address,
-      photoLink,
-    });
+    // Update user data in the database
+    // Update user data in the database
+    const updatedUser = await User.findOneAndUpdate(
+      { username },
+      { email, age, mobile, gender, address, photoLink },
+      { new: true, runValidators: true }
+    );
 
-    // Find the updated user to pass updated data to the profile page
-    const updatedUser = await User.findById(userId);
+    if (!updatedUser) {
+      return res.render("profile", {
+        user: req.user,
+        error: "User not found or update failed.",
+      });
+    }
 
     // Render the profile page with updated user data
     res.render("profile", {
@@ -214,10 +224,10 @@ app.post("/profile", async (req, res) => {
       success: "Profile updated successfully!",
     });
   } catch (error) {
-    console.error(error);
-    res.render("profile", {
+    console.error("Error updating profile:", error.message);
+    res.status(500).render("profile", {
       user: req.user,
-      error: "Error updating profile. Please try again.",
+      error: "An unexpected error occurred. Please try again later.",
     });
   }
 });
@@ -351,6 +361,12 @@ app.post("/contact", async (req, res) => {
 
 // Start the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Failed to connect to the database", error);
+  });
