@@ -1,52 +1,3 @@
-<!-- views/profile.ejs
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-    <link rel="stylesheet" href="../stylesheets/profile.css">
-</head>
-<body>
-    <div class="profile-container">
-        <h2>User Profile</h2>
-        <form action="/profile" method="POST" class="profile-form">
-            <label>Username:</label>
-            <input type="text" name="username" value="<%= user.username %>" required>
-
-            <label>Age:</label>
-            <input type="number" name="age" value="<%= user.age %>" required>
-
-            <label>Mobile Number:</label>
-            <input type="tel" name="mobile" value="<%= user.mobile %>" required>
-
-            <label>Gender:</label>
-            <select name="gender">
-                <option value="Male" <%= user.gender === 'Male' ? 'selected' : '' %>>Male</option>
-                <option value="Female" <%= user.gender === 'Female' ? 'selected' : '' %>>Female</option>
-                <option value="Other" <%= user.gender === 'Other' ? 'selected' : '' %>>Other</option>
-            </select>
-
-            <label>Address:</label>
-            <input type="text" name="address" value="<%= user.address %>" required>
-
-            <label>Photo Link:</label>
-            <input type="url" name="photoLink" value="<%= user.photoLink %>">
-
-            <label>Password:</label>
-            <input type="password" name="password" placeholder="Leave blank to keep current password">
-
-            <label>Confirm Password:</label>
-            <input type="password" name="confirmPassword" placeholder="Leave blank to keep current password">
-
-            <button type="submit" class="update-button">Update</button>
-        </form>
-
-        <a href="/apply-doctor" class="apply-link">Apply to be a doctor</a>
-    </div>
-</body>
-</html> -->
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -63,7 +14,9 @@
       <div id="nav-item">
         <li><a href="/" id="home">HOME</a></li>
         <li>
-          <a href="/profile/<%= encodeURIComponent(user.email) %>" id="services"
+          <a
+            href="/profile/<%= encodeURIComponent(user.username) %>"
+            id="services"
             >PROFILE</a
           >
         </li>
@@ -74,152 +27,136 @@
       <div id="help1">
         <i id="mode" class="ri-sun-fill"></i>
         <a href="tel:+91 9523366855" id="help"
-          >HelpLine
-          <i class="fa-solid fa-phone fa-fade"></i>
-        </a>
+          >HelpLine <i class="fa-solid fa-phone fa-fade"></i
+        ></a>
       </div>
     </div>
+
     <div class="container">
       <h2>User Profile</h2>
       <div class="header">
         <a href="/logout" class="logout-link">Log Out</a>
       </div>
-      <div class="profile-info">
-        <% if (user.photoLink) { %>
-        <img
-          src="<%= user.photoLink %>"
-          alt="User Photo"
-          class="profile-photo"
-        />
-        <% } %>
-
-        <p><strong>Username:</strong> <%= user.username %></p>
-        <p><strong>Email:</strong> <%= user.email %></p>
-        <p><strong>Age:</strong> <%= user.age %></p>
-        <p><strong>Mobile:</strong> <%= user.mobile %></p>
-        <p><strong>Gender:</strong> <%= user.gender %></p>
-        <p><strong>Address:</strong> <%= user.address %></p>
-        <p>
-          <strong>Photo Link:</strong>
-          <a href="<%= user.photoLink %>" target="_blank">View Photo</a>
-        </p>
-        <p>
-          <strong>Your's Appointment: <a href="">All Appointment</a></strong>
-        </p>
-
-        <!-- Display user role based on isDoctor flag -->
-        <p>
-          <strong>Role:</strong> <%= user.isDoctor ? "Doctor" : "Patient/User"
-          %>
-        </p>
+      <div class="profile-info" id="profile-info">
+        <!-- Profile data will be injected here -->
       </div>
 
-      <form action="/profile" method="POST" class="update-form">
+      <form class="update-form" id="update-form">
         <h3>Update Profile</h3>
         <input
           type="text"
+          id="username"
           name="username"
           placeholder="Username"
-          value="<%= user.username %>"
           required
         />
         <input
           type="email"
+          id="email"
           name="email"
           placeholder="Email"
-          value="<%= user.email %>"
           required
         />
-        <input
-          type="number"
-          name="age"
-          placeholder="Age"
-          value="<%= user.age %>"
-          required
-        />
+        <input type="number" id="age" name="age" placeholder="Age" required />
         <input
           type="text"
+          id="mobile"
           name="mobile"
           placeholder="Mobile Number"
-          value="<%= user.mobile %>"
           required
         />
         <input
           type="text"
+          id="gender"
           name="gender"
           placeholder="Gender"
-          value="<%= user.gender %>"
           required
         />
         <input
           type="text"
+          id="address"
           name="address"
           placeholder="Address"
-          value="<%= user.address %>"
           required
         />
         <input
           type="text"
+          id="photoLink"
           name="photoLink"
           placeholder="Photo Link"
-          value="<%= user.photoLink %>"
         />
         <button type="submit">Update</button>
       </form>
 
       <a href="/apply-doctor" class="apply-doctor">Apply to be a Doctor</a>
     </div>
+
+    <script>
+      // Dummy user data (you'll get this from the backend dynamically)
+      const user = {
+        username: "<%= user.username %>",
+        id: "<%= user._id %>",
+        email: "<%= user.email %>",
+        age: "<%= user.age %>",
+        mobile: "<%= user.mobile %>",
+        gender: "<%= user.gender %>",
+        address: "<%= user.address %>",
+        photoLink: "<%= user.photoLink %>",
+        isDoctor: "<%= user.isDoctor ? 'true' : 'false' %>",
+      };
+
+      // Store user data in localStorage
+      if (!localStorage.getItem("user")) {
+        localStorage.setItem("user", JSON.stringify(user));
+      }
+
+      // Populate the UI with user data
+      function populateUserData() {
+        const userData = JSON.parse(localStorage.getItem("user"));
+        if (userData) {
+          document.getElementById("profile-info").innerHTML = `
+            <img src="${
+              userData.photoLink
+            }" alt="User Photo" class="profile-photo" />
+            <p><strong>Username:</strong> ${userData.username}</p>
+            <p><strong>Email:</strong> ${userData.email}</p>
+            <p><strong>Age:</strong> ${userData.age}</p>
+            <p><strong>Mobile:</strong> ${userData.mobile}</p>
+            <p><strong>Gender:</strong> ${userData.gender}</p>
+            <p><strong>Address:</strong> ${userData.address}</p>
+            <p><strong>Role:</strong> ${
+              userData.isDoctor ? "Doctor" : "Patient/User"
+            }</p>
+          `;
+          document.getElementById("username").value = userData.username;
+          document.getElementById("email").value = userData.email;
+          document.getElementById("age").value = userData.age;
+          document.getElementById("mobile").value = userData.mobile;
+          document.getElementById("gender").value = userData.gender;
+          document.getElementById("address").value = userData.address;
+          document.getElementById("photoLink").value = userData.photoLink;
+        }
+      }
+
+      // Update user data in localStorage
+      document.getElementById("update-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const updatedUser = {
+          username: document.getElementById("username").value,
+          email: document.getElementById("email").value,
+          age: document.getElementById("age").value,
+          mobile: document.getElementById("mobile").value,
+          gender: document.getElementById("gender").value,
+          address: document.getElementById("address").value,
+          photoLink: document.getElementById("photoLink").value,
+          isDoctor: JSON.parse(localStorage.getItem("user")).isDoctor,
+        };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        populateUserData();
+      });
+
+      // Initial call to populate data
+      populateUserData();
+    </script>
   </body>
 </html>
-
-<!-- 
- <!DOCTYPE html>
- <html lang="en">
- <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="stylesheet" href="../stylesheets/profile.css"> 
-     <title>User Profile</title>
- </head>
- <body>
-
-     <div id="navbar">
-         <div id="logo">
-             <img src="./images/pngwing.com (1).png" alt="Logo" />
-         </div>
-         <div id="nav-item">
-             <li><a href="/" id="home">HOME</a></li>
-             <li><a href="/profile/<%= encodeURIComponent(user.email) %>" id="services">PROFILE</a></li>
-             <li><a href="/#aboutUs" id="about">ABOUT</a></li>
-             <li><a href="/#contactUs" id="contact">CONTACT</a></li>
-             <li><a href="/login" id="login">LOGIN</a></li>
-         </div>
-         <div id="help1">
-             <i id="mode" class="ri-sun-fill"></i>
-             <a href="tel:+91 9523366855" id="help">HelpLine
-                 <i class="fa-solid fa-phone fa-fade"></i>
-             </a>
-         </div>
-     </div>
- 
-     <div class="profile-container" style="margin-top: 15vh;">
-         <h2>User Profile</h2>
-         <form action="/updateProfile" method="POST">
-             <img src="<%= user.photoLink %>" alt="Profile Photo" class="profile-photo" />
-             <input type="text" name="username" placeholder="Username" value="<%= user.username %>" required />
-             <input type="number" name="age" placeholder="Age" value="<%= user.age %>" required />
-             <input type="text" name="mobile" placeholder="Mobile Number" value="<%= user.mobile %>" required />
-             <input type="text" name="gender" placeholder="Gender" value="<%= user.gender %>" required />
-             <input type="text" name="address" placeholder="Address" value="<%= user.address %>" required />
-             <input type="email" name="email" placeholder="Email" value="<%= user.email %>" required readonly />
-             <input type="password" name="password" placeholder="Password" required />
-             <input type="password" name="confirmPassword" placeholder="Confirm Password" required />
-             <input type="text" name="photoLink" placeholder="Photo Link" value="<%= user.photoLink %>" required />
-             <button type="submit">Update</button>
-         </form>
-         <a href="/logout" class="logout-button">Logout</a>
-     </div>
- 
- </body>
- </html>
-  -->

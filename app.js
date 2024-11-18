@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -12,31 +12,13 @@ const connectDB = require("./db");
 const User = require("./models/user-Model");
 
 const app = express();
-const JWT_SECRET = "your_jwt_secret_key";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
 // Middleware setup
-app.use(
-  session({
-    secret: "yourSecretKey", // Replace with your own secret
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-app.use(passport.initialize());
-app.use(passport.session());
-passport.serializeUser((user, done) => {
-  done(null, user.id); // Store user ID in session
-});
-passport.deserializeUser((id, done) => {
-  // Retrieve the user from the database using the ID
-  User.findById(id, (err, user) => {
-    done(err, user); // Pass the user to the next middleware
-  });
-});
 
 // Middleware for authentication
 const isAuthenticated = (req, res, next) => {
@@ -56,140 +38,125 @@ const isAuthenticated = (req, res, next) => {
 };
 
 // Middleware to check JWT in requests for protected routes
-const authenticateToken = (req, res, next) => {
-  const token =
-    req.cookies.token || req.headers["authorization"]?.split(" ")[1]; // Check both cookie and header
-  if (!token) {
-    return res.redirect("/login"); // Redirect to login if no token
-  }
-
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.redirect("/login"); 
-    req.user = user; 
-    next();
-  });
-};
-
-function verifyToken(req, res, next) {
-  const token = req.cookies.token || req.headers["authorization"];
-
-  if (!token) {
-    return res
-      .status(401)
-      .json({ message: "Access denied. No token provided." });
-  }
-
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (ex) {
-    res.status(400).json({ message: "Invalid token." });
-  }
-}
 
 app.get("/signup", (req, res) => {
   res.render("signup", { message: null });
 });
 
+// app.post("/signup", async (req, res) => {
+//   try {
+//     const { username, email, password } = req.body;
+//     const existingUser = await User.findOne({ email });
+
+//     if (existingUser) {
+//       return res.render("login", {
+//         message: "User with this email already exists.",
+//       });
+//     }
+
+//     const hashedPassword = await bcrypt.hash(password, 10);
+//     const user = new User({ username, email, password: hashedPassword });
+//     await user.save();
+
+//     const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+//       expiresIn: "1h",
+//     });
+//     res.cookie("token", token, { httpOnly: true });
+//     res.redirect("/login");
+//   } catch (error) {
+//     console.error(error);
+//     res.render("signup", { message: "Error signing up. Please try again." });
+//   }
+// });
+
+app.get("/login", (req, res) => {
+  res.render("login", { message: null });
+});
+
+app.get("/", (req, res) => {
+  res.render("index");
+});
 app.post("/signup", async (req, res) => {
   try {
     const { username, email, password } = req.body;
+
+    // Check if the user already exists
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      return res.render("signup", {
+      return res.render("login", {
         message: "User with this email already exists.",
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Generate a salt
+    const salt = await bcrypt.genSalt(10); // 10 salt rounds
+
+    // Hash the password with the generated salt
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create a new user
     const user = new User({ username, email, password: hashedPassword });
     await user.save();
 
+    // Generate a JWT token for the user
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
       expiresIn: "1h",
     });
-    res.cookie("token", token, { httpOnly: true });
-    res.redirect("/login"); 
+
+    // Set the token in a cookie
+    res.cookie("token", token);
+
+    // Redirect to login page
+    res.redirect("/login");
   } catch (error) {
     console.error(error);
     res.render("signup", { message: "Error signing up. Please try again." });
   }
 });
 
-app.get("/login", (req, res) => {
-  res.render("login", { message: null });
-});
-
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    // Find the user by email
     const user = await User.findOne({ email });
 
     if (!user) {
       return res.render("login", { message: "Invalid email or password." });
     }
 
+    // Compare the entered password with the stored hash
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
       return res.render("login", { message: "Invalid email or password." });
     }
-    /*
-    //Store local storage in forntend
 
-
-
-
-
-    \
-
-    */
-    // Create JWT token
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
-      expiresIn: "1h",
-    });
-    res.cookie("token", token, { httpOnly: true });
-    console.log(user);
-    // Pass user details to the profile page
-    // res.render('profile', { user: user, message: null }); // Redirect to profile page with user details
-    res.redirect(`/profile/${encodeURIComponent(user.username)}`); // Redirect to user's profile using email
+    // Successful login, render the profile page
+    res.status(200).render("profile", { user: user });
   } catch (error) {
-    console.error(error);
-    res.render("login", { message: "Error logging in. Please try again." });
+    console.log("Error", error);
   }
 });
+app.get("/getProfile", (req, res) => {});
+
+// Create JWT token
 
 // Route to handle logout
-app.get("/logout", (req, res) => {
-  // Clear the token cookie
-  res.clearCookie("token"); // Clear the token cookie to log out the user
-  res.redirect("/login"); // Redirect to login page or any other page
-});
-
-app.get("/", (req, res) => {
-  // Check if user is authenticated
-  if (req.isAuthenticated()) {
-    // User is logged in; pass user data to the template
-    res.render("index", { user: req.session.user });
-  } else {
-    // User is not logged in; pass null or an empty object
-    res.render("index", { user: null });
-  }
-});
 
 // // GET route for user profile by email
-app.get("/profile/:username", isAuthenticated, async (req, res) => {
+app.get("/profile/:username", async (req, res) => {
   try {
-    const username = decodeURIComponent(req.params.username); // Decode the email from the URL
+    const { username } = req.params;
     const user = await User.findOne({ username }); // Find user by
-    console.log(req.session.user);
+    console.log(user);
 
     if (!user) {
       return res.redirect("/login"); // Redirect if user not found
     }
 
-    res.render("profile", { user }); // Render profile page with user data
+    res.render("profile", { user: user }); // Render profile page with user data
   } catch (error) {
     console.error(error);
     res.redirect("/login"); // Redirect to login on error
@@ -233,63 +200,43 @@ app.post("/profile/:username", async (req, res) => {
 });
 
 // Route for doctor application
-app.get("/apply-doctor", authenticateToken, (req, res) => {
+app.get("/apply-doctor", (req, res) => {
   res.render("applyForDoctor");
 });
 // POST route to handle form submission
-app.post("/apply-doctor", async (req, res) => {
-  const { specialization, experience, fees } = req.body;
+// app.post("/apply-doctor", async (req, res) => {
+//   const { specialization, experience, fees } = req.body;
 
-  try {
-    // Assuming you have the user's ID stored in the session
-    const userId = req.session.userId; // Example user ID, replace with actual user retrieval method
+//   try {
+//     // Assuming you have the user's ID stored in the session
 
-    // Check if user exists
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).send("User not found");
-    }
+//     // Check if user exists
+//     // const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).send("User not found");
+//     }
 
-    // Create a new Doctor document
-    const newDoctor = new Doctor({
-      userId: user._id,
-      specialization,
-      experience,
-      fees,
-      isDoctor: true, // Set to true since they are applying to be a doctor
-    });
-
-    // Save the doctor to the database
-    await newDoctor.save();
-
-    // Update the user to reflect they are a doctor
-    user.isDoctor = true;
-    await user.save();
-
-    res.send("You have successfully applied to be a doctor!");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("An error occurred while applying to be a doctor");
-  }
-});
-
-// app.get("/book-appointment", (req, res) => {
-//   res.render("bookAppointment");
+// Create a new Doctor document
+// const newDoctor = new Doctor({
+//   userId: user._id,
+//   specialization,
+//   experience,
+//   fees,
+//   isDoctor: true, // Set to true since they are applying to be a doctor
 // });
 
-// app.get("/user-appointment", (req, res) => {
-//   res.render("UserAppointments");
-// });
-//This Code is Written by waseem's father = Samar
+// Save the doctor to the database
+//     await newDoctor.save();
 
-// app.get("/book-appointment/:doctorId", async (req, res) => {
-//   const { doctorId } = req.params;
-//   const doctor = await User.findById(doctorId);
-//   res.render("bookAppointment", { doctor: doctor });
-// });
+//     // Update the user to reflect they are a doctor
+//     user.isDoctor = true;
+//     await user.save();
 
-// app.get("/doctors", (req, res) => {
-//   res.render("doctors");
+//     res.send("You have successfully applied to be a doctor!");
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send("An error occurred while applying to be a doctor");
+//   }
 // });
 
 app.post("/postAppointment", async (req, res) => {
@@ -360,7 +307,7 @@ app.post("/contact", async (req, res) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 connectDB()
   .then(() => {
     app.listen(PORT, () => {

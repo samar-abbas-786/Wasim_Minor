@@ -53,13 +53,13 @@
           <li>
             <a href="/" id="home">HOME</a>
           </li>
-          <li>
-            <a
-              href=" <%= user?`/profile/${encodeURIComponent(user.email)}`  : '/login' %>"
-              id="services"
-              >PROFILE</a
-            >
-          </li>
+          <form method="get" action="/getProfile">
+            <li>
+              <a href="/profile/<%= user.username %>" id="profile-link"
+                >PROFILE</a
+              >
+            </li>
+          </form>
           <li>
             <a href="#aboutUs" id="about">ABOUT</a>
           </li>
@@ -336,4 +336,19 @@
 
     <!-- <script src="./javascripts/home.js"></script> -->
   </body>
+
+  <!-- <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const profileLink = document.getElementById("profile-link");
+      const user = localStorage.getItem("user");
+      console.log(user.username);
+
+      if (user) {
+        const userData = JSON.parse(user); // Parse the user data from localStorage
+        profileLink.href = `/profile/${encodeURIComponent(user.username)}`;
+      } else {
+        profileLink.href = "/login";
+      }
+    });
+  </script> -->
 </html>
