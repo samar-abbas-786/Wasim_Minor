@@ -64,13 +64,12 @@ const authenticateToken = (req, res, next) => {
   }
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.redirect("/login"); // Redirect to login if token is invalid
-    req.user = user; // Attach user information to the request object
+    if (err) return res.redirect("/login"); 
+    req.user = user; 
     next();
   });
 };
 
-// Middleware to verify JWT token
 function verifyToken(req, res, next) {
   const token = req.cookies.token || req.headers["authorization"];
 
@@ -89,12 +88,10 @@ function verifyToken(req, res, next) {
   }
 }
 
-// GET route for signup page
 app.get("/signup", (req, res) => {
   res.render("signup", { message: null });
 });
 
-// POST route to handle signup
 app.post("/signup", async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -110,24 +107,21 @@ app.post("/signup", async (req, res) => {
     const user = new User({ username, email, password: hashedPassword });
     await user.save();
 
-    // Create JWT token
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
       expiresIn: "1h",
     });
     res.cookie("token", token, { httpOnly: true });
-    res.redirect("/login"); // Redirect to a protected page after signup
+    res.redirect("/login"); 
   } catch (error) {
     console.error(error);
     res.render("signup", { message: "Error signing up. Please try again." });
   }
 });
 
-// GET route for login page
 app.get("/login", (req, res) => {
   res.render("login", { message: null });
 });
 
-//   // POST route to handle login
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
