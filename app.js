@@ -10,6 +10,7 @@ const Appointment = require("./models/appointment-Model");
 const Doctor = require("./models/doctor-Model");
 const connectDB = require("./db");
 const User = require("./models/user-Model");
+const { default: mongoose } = require("mongoose");
 
 const app = express();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -21,21 +22,21 @@ app.use(cookieParser());
 // Middleware setup
 
 // Middleware for authentication
-const isAuthenticated = (req, res, next) => {
-  const token = req.cookies.token; // Assuming you are storing token in cookies
-  if (!token) {
-    return res.redirect("/login"); // Redirect to login if not authenticated
-  }
+// const isAuthenticated = (req, res, next) => {
+//   const token = req.cookies.token; // Assuming you are storing token in cookies
+//   if (!token) {
+//     return res.redirect("/login"); // Redirect to login if not authenticated
+//   }
 
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.userId = decoded.userId; // Attach user ID to request object
-    next(); // Proceed to the next middleware or route handler
-  } catch (err) {
-    console.error(err);
-    return res.redirect("/login"); // Redirect to login if token is invalid
-  }
-};
+//   try {
+//     const decoded = jwt.verify(token, JWT_SECRET);
+//     req.userId = decoded.userId; // Attach user ID to request object
+//     next(); // Proceed to the next middleware or route handler
+//   } catch (err) {
+//     console.error(err);
+//     return res.redirect("/login"); // Redirect to login if token is invalid
+//   }
+// };
 
 // Middleware to check JWT in requests for protected routes
 
@@ -132,9 +133,25 @@ app.post("/login", async (req, res) => {
     if (!isMatch) {
       return res.render("login", { message: "Invalid email or password." });
     }
+    /*
+    //Store local storage in forntend
 
-    // Successful login, render the profile page
-    res.status(200).render("profile", { user: user });
+
+
+
+
+    \
+
+    */
+    // Create JWT token
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    res.cookie("token", token, { httpOnly: true });
+    console.log(user);
+    // Pass user details to the profile page
+    // res.render('profile', { user: user, message: null }); // Redirect to profile page with user details
+    res.redirect(`/profile/${encodeURIComponent(user.username)}`); // Redirect to user's profile using email
   } catch (error) {
     console.log("Error", error);
   }
@@ -144,34 +161,48 @@ app.get("/getProfile", (req, res) => {});
 // Create JWT token
 
 // Route to handle logout
+app.get("/logout", (req, res) => {
+  // Clear the token cookie
+  res.clearCookie("token"); // Clear the token cookie to log out the user
+  res.redirect("/login"); // Redirect to login page or any other page
+});
+
+app.get("/", (req, res) => {
+  // Check if user is authenticated
+  if (req.isAuthenticated()) {
+    // User is logged in; pass user data to the template
+    res.render("index", { user: req.session.user });
+  } else {
+    // User is not logged in; pass null or an empty object
+    res.render("index", { user: null });
+  }
+});
 
 // // GET route for user profile by email
-app.get("/profile/:username", async (req, res) => {
+app.get("/profile/:username", isAuthenticated, async (req, res) => {
   try {
-    const { username } = req.params;
+    const username = decodeURIComponent(req.params.username); // Decode the email from the URL
     const user = await User.findOne({ username }); // Find user by
-    console.log(user);
+    console.log(req.session.user);
 
     if (!user) {
       return res.redirect("/login"); // Redirect if user not found
     }
 
-    res.render("profile", { user: user }); // Render profile page with user data
+    res.render("profile", { user }); // Render profile page with user data
   } catch (error) {
-    console.error(error);
-    res.redirect("/login"); // Redirect to login on error
+    console.error("Error fetching user profile:", error.message);
+    res.redirect("/login");
   }
 });
-
-// POST route to update user profile
 app.post("/profile/:username", async (req, res) => {
   try {
     const { username } = req.params;
-    const { email, age, mobile, gender, address, photoLink } = req.body;
-    // const userId = req.user?.userId; // Assuming userId comes from a middleware handling JWT
 
-    // Update user data in the database
-    // Update user data in the database
+    // Check if user is logged in and matches the profile username
+
+    const { email, age, mobile, gender, address, photoLink } = req.body;
+
     const updatedUser = await User.findOneAndUpdate(
       { username },
       { email, age, mobile, gender, address, photoLink },
@@ -185,11 +216,7 @@ app.post("/profile/:username", async (req, res) => {
       });
     }
 
-    // Render the profile page with updated user data
-    res.render("profile", {
-      user: updatedUser,
-      success: "Profile updated successfully!",
-    });
+    res.redirect(`/profile/${encodeURIComponent(username)}`);
   } catch (error) {
     console.error("Error updating profile:", error.message);
     res.status(500).render("profile", {

@@ -41,7 +41,15 @@
         <!-- Profile data will be injected here -->
       </div>
 
+<<<<<<< HEAD
       <form class="update-form" id="update-form">
+=======
+      <form
+        action="/profile/<%= encodeURIComponent(user.username) %>"
+        method="POST"
+        class="update-form"
+      >
+>>>>>>> b16625ca8fb816087c8e699f95264c8bbecb2657
         <h3>Update Profile</h3>
         <input
           type="text"
